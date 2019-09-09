@@ -1,0 +1,170 @@
+
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>3D Viewer</title>
+		<style>
+			body {
+  				width: 100vw;
+  				height: 100vh;
+  				margin: 0;
+  				overflow: hidden;
+			}
+                        
+        </style>
+        <p>use scroll wheel to zoom in/out</p>
+	</head>
+	<body>
+		<!-- three.min.js r87 -->
+<script src="https://threejs.org/build/three.js"></script>
+
+<!-- GLTFLoader.js -->
+<script src="https://cdn.rawgit.com/mrdoob/three.js/r92/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/controls/OrbitControls.js"></script>
+
+		<script>
+                var scene, renderer, camera;
+                var mesh;
+                var controls;
+
+               
+                
+                function init() {
+                    
+                    scene = new THREE.Scene(); 
+                    
+                    camera = new THREE.PerspectiveCamera( 85, window.innerWidth/window.innerHeight, 0.1, 1000 ); 
+                    camera.position.z = 35; 
+                    camera.position.y = 13; 
+                    camera.lookAt(0,0,0);
+                    
+                    scene.background = new THREE.Color(0xdddddd); //Set background color 
+
+                    renderer = new THREE.WebGLRenderer({antialias: true}); 
+                    renderer.setSize( window.innerWidth, window.innerHeight ); 
+                    document.body.appendChild( renderer.domElement ); 
+  
+                    renderer.setClearColor(0x00ffff, 1); 
+                    renderer.gammaOutput = true;
+
+                    
+                    controls = new THREE.OrbitControls(camera, renderer.domElement);
+                    controls.autoRotate = true;
+                    controls.autoRotateSpeed = 1;
+
+                    // // vertical angle control
+                    // controls.minPolarAngle = -Math.PI / 2;  //how far above model you can move
+                    // controls.maxPolarAngle = Math.PI / 2;   //how far below model you can move
+
+                    // //  horizontally angle control
+                    // controls.minAzimuthAngle = -Math.PI / 4;
+                    // controls.maxAzimuthAngle = Math.PI / 4;
+               
+                    var light = new THREE.DirectionalLight("#c1582d", 1);
+                    var ambient = new THREE.AmbientLight("#85b2cd");
+                    light.position.set( 0, -70, 100 ).normalize();
+                    scene.add(light);
+                    scene.add(ambient);
+
+                    var texture = new THREE.Texture();
+                    var manager = new THREE.LoadingManager();
+                    manager.onProgress = function ( item, loaded, total ) {};
+                    var onProgress = function ( xhr ) {};
+                    var onError = function ( xhr ) {};
+
+                  
+                    var loader = new THREE.GLTFLoader();
+
+                    // Load a glTF resource
+                    loader.load(
+                        // resource URL
+                        'car2.glb',                                                               /**** GLB or GLTF file ****/
+                        // called when the resource is loaded
+                        function ( gltf ) {
+
+                                mesh = gltf.scene;
+                                mesh.scale.set( 5, 5, 5 );
+                                scene.add( mesh );
+                    
+                                //scene.add( gltf.scene );
+
+                                //gltf.animations; // Array<THREE.AnimationClip>
+                                //gltf.scene; // THREE.Scene
+                                //gltf.scenes; // Array<THREE.Scene>
+                                //gltf.cameras; // Array<THREE.Camera>
+                                //gltf.asset; // Object
+
+                        },
+                        // called when loading is in progresses
+                        function ( xhr ) {
+
+                                console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+
+                        },
+                        // called when loading has errors
+                        function ( error ) {
+
+                                console.log( 'An error happened' );
+
+                        }
+                    );
+                    
+                   // document.addEventListener("mousedown", onMouseDown);
+                   // document.addEventListener("touchstart", onMouseDown);
+                   // document.addEventListener("mouseup", onMouseUp);
+                   // document.addEventListener("touchend", onMouseUp);
+                   // document.addEventListener("mousemove", onMouseMove);
+                    //document.addEventListener("touchmove", onMouseMove);
+
+                    render();   
+                }
+
+                function render() {
+                    requestAnimationFrame( render ); 
+                    controls.update();
+                    renderer.render(scene, camera); 
+                }
+
+
+                                                                        // function onMouseDown(event) {
+                                                                        //     isMouseDown = true;
+                                                                        // }
+
+            
+                // function onMouseMove(event) {
+                //     // if (isMouseDown) {
+                       
+                //         if ( mesh ) {
+                //             mesh.rotation.y = getMouseX(event)/50;
+                //             mesh.rotation.x = getMouseY(event)/50;
+
+                //         }
+                //     // }
+                // }
+
+
+                                                                // function onMouseUp(event) {
+                                                                //     isMouseDown = false;
+                                                                // }
+
+                // function getMouseX(event) {
+                //     if (event.type.indexOf("touch") == -1)
+                //         return event.clientX;
+                //     else
+                //         return event.touches[0].clientX;
+                // }
+
+                // function getMouseY(event) {
+                //     if (event.type.indexOf("touch") == -1)
+                //         return event.clientY;
+                //     else
+                //         return event.touches[0].clientY;
+                // }
+
+                window.addEventListener('DOMContentLoaded', init);
+		</script>
+		
+	</body>
+</html>
